@@ -230,6 +230,13 @@ textarea:focus {
   justify-content: center;
 }
 
+.auth-error {
+  margin: 0.9rem 0 0;
+  font-size: 0.88rem;
+  color: #bf3d5f;
+  text-align: center;
+}
+
 .eyebrow {
   margin: 0;
   font-size: 0.78rem;

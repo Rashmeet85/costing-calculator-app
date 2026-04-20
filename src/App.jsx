@@ -10,7 +10,7 @@ const SalesPage = lazy(() => import("./pages/SalesPage"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const CustomRecipePage = lazy(() => import("./pages/CustomRecipePage"));
 
-function AuthGate({ onGoogle, authReady }) {
+function AuthGate({ onGoogle, authReady, authError }) {
   return (
     <div className="auth-screen">
       <div className="ambient ambient-left" />
@@ -25,13 +25,14 @@ function AuthGate({ onGoogle, authReady }) {
         <button className="primary-button auth-button" onClick={onGoogle} disabled={!authReady}>
           Continue with Google
         </button>
+        {authError ? <p className="auth-error">{authError}</p> : null}
       </div>
     </div>
   );
 }
 
 export default function App() {
-  const { user, loading, authAvailable, signInWithGoogle, signOutUser } = useAuth();
+  const { user, loading, authError, authAvailable, signInWithGoogle, signOutUser } = useAuth();
 
   if (loading) {
     return (
@@ -45,7 +46,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <AuthGate authReady={authAvailable} onGoogle={signInWithGoogle} />;
+    return <AuthGate authReady={authAvailable} authError={authError} onGoogle={signInWithGoogle} />;
   }
 
   return (
