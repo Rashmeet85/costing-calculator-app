@@ -11,8 +11,8 @@ import {
 import { db } from "./firebase";
 import { normalizeRecipe, normalizeRecipeIngredient } from "../utils/recipe";
 
-const topLevelCollection = import.meta.env.VITE_RECIPE_COLLECTION || "recipes";
-const userRecipeCollection = import.meta.env.VITE_RECIPE_USER_COLLECTION || "recipes";
+const TOP_LEVEL_RECIPE_COLLECTION = "recipes";
+const USER_RECIPE_COLLECTION = "recipes";
 
 function customRecipesCollection(uid) {
   return collection(db, "users", uid, "customRecipes");
@@ -59,8 +59,8 @@ export async function fetchRecipeById(uid, recipeId) {
   }
 
   const references = [
-    doc(db, topLevelCollection, recipeId),
-    doc(db, "users", uid, userRecipeCollection, recipeId),
+    doc(db, TOP_LEVEL_RECIPE_COLLECTION, recipeId),
+    doc(db, "users", uid, USER_RECIPE_COLLECTION, recipeId),
     doc(db, "users", uid, "customRecipes", recipeId),
   ];
 
