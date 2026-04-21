@@ -12,8 +12,13 @@ export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState("");
+  const [signingIn, setSigningIn] = useState(false);
 
   useEffect(() => {
+    if (!isAuthConfigured()) {
+      setAuthError("Google sign-in is unavailable. Check the Firebase web app configuration.");
+    }
+
     resolveRedirectSignIn().catch((error) => {
       setAuthError(
         error?.code
@@ -33,10 +38,12 @@ export function useAuth() {
   return {
     user,
     loading,
+    signingIn,
     authError,
     authAvailable: isAuthConfigured(),
     signInWithGoogle: async () => {
       try {
+        setSigningIn(true);
         setAuthError("");
         return await signInWithGoogle();
       } catch (error) {
@@ -46,6 +53,8 @@ export function useAuth() {
             : "Google sign-in did not complete. Please try again.",
         );
         throw error;
+      } finally {
+        setSigningIn(false);
       }
     },
     signInAsGuest: signInAnonymouslyUser,

@@ -10,7 +10,7 @@ const SalesPage = lazy(() => import("./pages/SalesPage"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const CustomRecipePage = lazy(() => import("./pages/CustomRecipePage"));
 
-function AuthGate({ onGoogle, authReady, authError }) {
+function AuthGate({ onGoogle, authReady, authError, signingIn }) {
   return (
     <div className="auth-screen">
       <div className="ambient ambient-left" />
@@ -22,9 +22,14 @@ function AuthGate({ onGoogle, authReady, authError }) {
           Open your recipe from the Recipe App, price each ingredient once, and
           keep track of what the bakery is really making.
         </p>
-        <button className="primary-button auth-button" onClick={onGoogle} disabled={!authReady}>
-          Continue with Google
+        <button className="primary-button auth-button" onClick={onGoogle} disabled={signingIn}>
+          {signingIn ? "Opening Google..." : "Continue with Google"}
         </button>
+        {!authReady ? (
+          <p className="muted">
+            Sign-in should still open, but if it does not, the Firebase auth config needs attention.
+          </p>
+        ) : null}
         {authError ? <p className="auth-error">{authError}</p> : null}
       </div>
     </div>
@@ -32,7 +37,7 @@ function AuthGate({ onGoogle, authReady, authError }) {
 }
 
 export default function App() {
-  const { user, loading, authError, authAvailable, signInWithGoogle, signOutUser } = useAuth();
+  const { user, loading, signingIn, authError, authAvailable, signInWithGoogle, signOutUser } = useAuth();
 
   if (loading) {
     return (
@@ -46,7 +51,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <AuthGate authReady={authAvailable} authError={authError} onGoogle={signInWithGoogle} />;
+    return <AuthGate authReady={authAvailable} authError={authError} signingIn={signingIn} onGoogle={signInWithGoogle} />;
   }
 
   return (

@@ -50,7 +50,7 @@ export async function resolveRedirectSignIn() {
 
 export async function signInWithGoogle() {
   if (!auth) {
-    return null;
+    throw new Error("Firebase Auth is not initialized.");
   }
 
   if (shouldPreferRedirect()) {
