@@ -213,7 +213,8 @@ export default function CostCalculatorPage({ user }) {
         >
           <p className="muted">
             Use the recipe library to open a saved custom order, or click
-            “Calculate Costing” from the Recipe App once we wire the apps together.
+            {" "}
+            "Calculate Costing" from the Recipe App once we wire the apps together.
           </p>
         </GlassCard>
       </div>

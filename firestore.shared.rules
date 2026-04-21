@@ -10,10 +10,17 @@ service cloud.firestore {
       return isSignedIn() && request.auth.token.email == 'h.r17731785@gmail.com';
     }
 
+    function currentUserEmail() {
+      return isSignedIn() ? request.auth.token.email : null;
+    }
+
     function currentRole() {
       return isOwner()
         ? 'owner'
-        : get(/databases/$(database)/documents/roles/$(request.auth.token.email)).data.role;
+        : currentUserEmail() != null
+          && exists(/databases/$(database)/documents/roles/$(currentUserEmail()))
+            ? get(/databases/$(database)/documents/roles/$(currentUserEmail())).data.role
+            : null;
     }
 
     function canManageRecipes() {
@@ -70,7 +77,7 @@ service cloud.firestore {
     }
 
     match /roles/{userEmail} {
-      allow read: if isSignedIn() && (canManageRoles() || request.auth.token.email == userEmail);
+      allow read: if isSignedIn() && (canManageRoles() || currentUserEmail() == userEmail);
       allow create, update: if isSignedIn() && canWriteRole(userEmail);
       allow delete: if isSignedIn() && canDeleteRole(userEmail);
     }

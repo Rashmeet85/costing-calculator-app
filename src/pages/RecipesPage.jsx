@@ -109,7 +109,7 @@ export default function RecipesPage({ user }) {
                       </span>
                     </div>
                     <p className="muted">
-                      {recipe.ingredientCount} ingredients • Makes {recipe.yield} {getUnitLabel(recipe.yieldUnit)}
+                      {recipe.ingredientCount} ingredients | Makes {recipe.yield} {getUnitLabel(recipe.yieldUnit)}
                     </p>
                     {savedSetup ? (
                       <p className="recipe-card-price">

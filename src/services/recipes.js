@@ -30,11 +30,13 @@ export function subscribeCustomRecipes(uid, callback) {
 }
 
 export async function saveCustomRecipe(uid, recipe) {
-  if (!db) {
+  if (!db || !uid) {
     return null;
   }
 
   const recipeId = recipe.id || crypto.randomUUID();
+  const reference = doc(db, "users", uid, "customRecipes", recipeId);
+  const existingSnapshot = await getDoc(reference);
   const normalized = {
     title: recipe.title,
     yield: Number(recipe.yield || 1),
@@ -42,10 +44,12 @@ export async function saveCustomRecipe(uid, recipe) {
     ingredients: recipe.ingredients.map(normalizeRecipeIngredient),
     sourceApp: "costing-app",
     updatedAt: serverTimestamp(),
-    createdAt: serverTimestamp(),
+    createdAt: existingSnapshot.exists()
+      ? existingSnapshot.data().createdAt || serverTimestamp()
+      : serverTimestamp(),
   };
 
-  await setDoc(doc(db, "users", uid, "customRecipes", recipeId), normalized);
+  await setDoc(reference, normalized);
   return normalizeRecipe(normalized, recipeId);
 }
 
